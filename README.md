@@ -8,13 +8,18 @@ An AI-powered agent that uses the ReAct (Reasoning and Acting) framework to answ
 - **Web Search**: Integrates TavilySearch for real-time web results.
 - **LLM Support**: Default to Ollama's Llama 3.1, easily switchable to OpenAI or Groq models.
 - **Structured Output**: Returns answers and sources in a Pydantic schema.
+- **Custom Tool Examples**: See how to add your own tools and callbacks.
 
 ## Project Structure
 
 - `main.py` — Entry point; sets up the agent, tools, and runs a sample query.
 - `prompt.py` — Contains the custom ReAct prompt template.
 - `schema.py` — Pydantic models for agent output.
-- `pyproject.toml` — Project dependencies and metadata.
+- `callbacks.py` — Custom callback handler for LLM events.
+- `custom_tool_example.py` — Example: minimal custom tool with ReAct agent.
+- `custom_tool_with_scratchpad.py` — Example: advanced custom tool with scratchpad and callback handler.
+- `requirements.txt` — Python dependencies.
+- `pyproject.toml` — Project metadata and dependencies.
 
 ## Setup
 
@@ -52,7 +57,7 @@ An AI-powered agent that uses the ReAct (Reasoning and Acting) framework to answ
 	# GROQ_API_KEY=your_groq_api_key
 	```
 
-5. **Run the agent**
+5. **Run the main agent**
 
 	```bash
 	python main.py
@@ -60,9 +65,32 @@ An AI-powered agent that uses the ReAct (Reasoning and Acting) framework to answ
 
 	You should see the agent's output for the sample query in the console.
 
+## Custom Tool Examples
+
+### Minimal Custom Tool
+
+Run the minimal custom tool example:
+
+```bash
+python custom_tool_example.py
+```
+
+### Advanced Custom Tool with Scratchpad and Callback
+
+Run the advanced custom tool example:
+
+```bash
+python custom_tool_with_scratchpad.py
+```
+
+This demonstrates:
+- How to add your own tools
+- How to use a scratchpad for intermediate steps
+- How to use a custom callback handler for LLM events
+
 ## Usage
 
-Modify the `main.py` file to change the input query or integrate the agent into your own application. The agent is set up to:
+Modify the `main.py` or custom tool scripts to change the input query or integrate the agent into your own application. The agent is set up to:
 
 1. Accept a user query (e.g., "search for 3 job postings for an ai engineer on linkedin and list their details").
 2. Use the ReAct pattern to decide when to search and how to reason.
@@ -70,9 +98,10 @@ Modify the `main.py` file to change the input query or integrate the agent into 
 
 ## Customization
 
-- **Change LLM**: Swap the `llm` variable in `main.py` to use OpenAI, Groq, or other supported models.
+- **Change LLM**: Swap the `llm` variable in `main.py` or the example scripts to use OpenAI, Groq, or other supported models.
 - **Add Tools**: Add more tools to the `tools` list for additional capabilities.
-- **Prompt Engineering**: Edit `prompt.py` to customize the agent's reasoning and output style.
+- **Prompt Engineering**: Edit `prompt.py` or the prompt in the example scripts to customize the agent's reasoning and output style.
+- **Callbacks**: Use or extend `callbacks.py` to add custom logging or monitoring for LLM events.
 
 ## Example Output
 
