@@ -11,6 +11,8 @@ from langchain_core.agents import AgentAction, AgentFinish
 from langchain.agents.format_scratchpad import format_log_to_str
 from langchain_groq import ChatGroq
 
+from callbacks import AgentCallbackHandler
+
 load_dotenv()
 
 prompt_template = """
@@ -66,6 +68,7 @@ def main():
         model="meta-llama/llama-4-scout-17b-16e-instruct",
         stop_sequences=["\nObservation"],
         temperature=0,
+        callbacks=[AgentCallbackHandler()],
     )
     # llm = ChatOllama(
     #     model="llama3.1",
@@ -84,32 +87,32 @@ def main():
         | ReActSingleInputOutputParser()
     )
 
-    agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
-        input={
-            "input": "How many characters are in `HelloWorlds`?",
-            "agent_scratchpad": intermediate_steps,
-        }
-    )
-    print(agent_step)
+    agent_step = None  # type: ignore
+    while not isinstance(agent_step, AgentFinish):
+        agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
+            input={
+                "input": "How many characters are in `HelloWorlds`?",
+                "agent_scratchpad": intermediate_steps,
+            }
+        )
 
-    if isinstance(agent_step, AgentAction):
-        tool_name = agent_step.tool
-        tool_to_use = find_tool_by_name(tools, tool_name)
-        tool_input = agent_step.tool_input
+        if isinstance(agent_step, AgentAction):
+            tool_name = agent_step.tool
+            tool_to_use = find_tool_by_name(tools, tool_name)
+            tool_input = agent_step.tool_input
 
-        observation = tool_to_use.invoke(tool_input)
+            observation = tool_to_use.invoke(tool_input)
 
-        print(f"{observation=}")
+            print(f"{observation=}")
 
-        intermediate_steps.append((agent_step, str(observation)))
+            intermediate_steps.append((agent_step, str(observation)))
 
-    agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
-        input={
-            "input": "How many characters are in `HelloWorlds`?",
-            "agent_scratchpad": intermediate_steps,
-        }
-    )
-    print(agent_step)
+        agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
+            input={
+                "input": "How many characters are in `HelloWorlds`?",
+                "agent_scratchpad": intermediate_steps,
+            }
+        )
 
     if isinstance(agent_step, AgentFinish):
         print("### AgentFinish ###")
